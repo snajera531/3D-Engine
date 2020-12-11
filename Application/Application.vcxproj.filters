@@ -34,6 +34,9 @@
     <Filter Include="Resources\Shaders">
       <UniqueIdentifier>{dd649dc6-39fd-47fd-aabc-1c6f2ad05aab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Textures">
+      <UniqueIdentifier>{5de28ddd-d586-493a-b24a-baf076d14217}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
