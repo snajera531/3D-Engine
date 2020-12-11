@@ -1,30 +1,40 @@
+#include "pch.h"
 #include "sdl.h"
+#include "Engine/Graphics/Renderer.h"
+#include "Engine/Graphics/Program.h"
 #include <glad\glad.h>
 
 int main(int argc, char** argv) {
-	int result = SDL_Init(SDL_INIT_VIDEO);
+	sn::Renderer renderer;
+	renderer.Startup();
+	renderer.Create("OpenGL", 800, 600);
 
-	if (result != 0) {
-		SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
-	}
+	//initialization
+	float vertices[] = {
+		-0.5f,-0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+		 0.0f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+		 0.5f,-0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
+	};
 
-	SDL_Window* window = SDL_CreateWindow("OpenGL", 100, 100, 800, 600, SDL_WINDOW_OPENGL);
-	if (window == nullptr) {
-		SDL_Log("Failed to create window: %s", SDL_GetError());
-	}
-	{
-		SDL_Log("Failed to create window: %s", SDL_GetError()); 
-	}
+	sn::Program program;
+	program.CreateShaderFromFile("shaders\\basic.vert", GL_VERTEX_SHADER);
+	program.CreateShaderFromFile("shaders\\basic.frag", GL_FRAGMENT_SHADER);
+	program.Link();
+	program.Use();
+
+	//create vertex buffers
+	GLuint vbo;
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	//set position pipeline (vertex attributes)
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), 0);
+	glEnableVertexAttribArray(0);
 	
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1); 
-	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1); 
-	SDL_GL_SetSwapInterval(1); 
-	SDL_GLContext context = SDL_GL_CreateContext(window); 
-	
-	if (!gladLoadGL()) {
-		SDL_Log("Failed to create OpenGL context");
-		exit(-1);
-	}
+	//set color pipeline (vertex attributes)
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
 
 	bool quit = false;
 	while (!quit) {
@@ -41,21 +51,11 @@ int main(int argc, char** argv) {
 		}
 		SDL_PumpEvents(); 
 
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f); 
-		glClear(GL_COLOR_BUFFER_BIT); 
+		renderer.BeginFrame();
 
-		glBegin(GL_TRIANGLES); 
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 
-		glColor3f(1.0f, 0.0f, 0.0f);
-		glVertex2f(-0.5f, -0.5f); 
-		glColor3f(0.0f, 1.0f, 0.0f); 
-		glVertex2f(0.0f, 0.5f); 
-		glColor3f(0.0f, 0.0f, 1.0f); 
-		glVertex2f(0.5f, -0.5f); 
-
-		glEnd();
-
-		SDL_GL_SwapWindow(window);
+		renderer.EndFrame();
 	}
 
 	return 0;
