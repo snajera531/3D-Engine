@@ -45,13 +45,17 @@ bool sn::Renderer::Create(const std::string& name, int width, int height)
 		exit(-1);
 	}
 
+	glViewport(0, 0, width, height);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+
 	return true;
 }
 
 void sn::Renderer::BeginFrame()
 {
 	glClearColor(0, 0, 0, 1);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void sn::Renderer::EndFrame()

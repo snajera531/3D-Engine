@@ -1,6 +1,5 @@
 #pragma once
-#include "Engine/Core/Assert.h"
-#include "Engine/Math/Math.h"
+
 #include <glm/glm.hpp>
 #include <glm/gtx/compatibility.hpp>
 #include <glm/gtx/norm.hpp>
@@ -9,3 +8,5 @@
 #include <glm/vec4.hpp>
 #include <glm/gtx/color_space.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/constants.hpp>
+
